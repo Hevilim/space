@@ -7,6 +7,8 @@
 #include <cstring>
 #include <string>
 
+#include "../include/space.hpp"
+
 int main(int argc, char *argv[]) {
     if (!SDL_Init(SDL_INIT_VIDEO)) {
         SDL_Log("Couldn't initialize SDL: %s", SDL_GetError());
@@ -21,7 +23,7 @@ int main(int argc, char *argv[]) {
     SDL_Window *window;
     SDL_Renderer *renderer;
 
-    if (!SDL_CreateWindowAndRenderer("Space", 320, 240, SDL_WINDOW_RESIZABLE, &window, &renderer)) {
+    if (!SDL_CreateWindowAndRenderer("Space", 800, 600, SDL_WINDOW_RESIZABLE, &window, &renderer)) {
         SDL_Log("Couldn't create window and renderer: %s", SDL_GetError());
         return 1;
     }
@@ -43,7 +45,8 @@ int main(int argc, char *argv[]) {
         while (SDL_PollEvent(&event)) {
             if (event.type == SDL_EVENT_QUIT) {
                 running = false;
-            } else if (event.type == SDL_EVENT_DROP_FILE) {
+            } 
+            else if (event.type == SDL_EVENT_DROP_FILE) {
                 const char* path = (const char*)event.drop.data;
                 SDL_Log("Dropped file: %s", path);
 
@@ -61,14 +64,12 @@ int main(int argc, char *argv[]) {
                     SDL_Log("Failed to create texture: %s", SDL_GetError());
                 }
 
-                // Извлекаем имя файла
                 size_t len = std::strlen(path), i;
                 for (i = len - 1; i > 0; --i) {
                     if (path[i - 1] == '/') break;
                 }
                 std::string name = std::string(path + i);
 
-                // Рендерим текст
                 if (text_texture) SDL_DestroyTexture(text_texture);
 
                 SDL_Color yellow = {255, 255, 0, 255};
@@ -79,25 +80,23 @@ int main(int argc, char *argv[]) {
                 }
 
                 text_texture = SDL_CreateTextureFromSurface(renderer, text_surface);
-                text_rect = {10.0f, 10.0f, (float)text_surface->w, (float)text_surface->h};
+                text_rect = {0, 0, (float)text_surface->w, (float)text_surface->h};
                 SDL_DestroySurface(text_surface);
             }
         }
 
-        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
-        SDL_RenderClear(renderer);
+        RenderSpace(renderer, window);
 
         if (texture) {
-            SDL_RenderTexture(renderer, texture, NULL, NULL);
+            SDL_RenderTexture(renderer, texture, NULL, NULL); 
         }
 
         // Рисуем текст поверх квадрата
         if (text_texture) {
-            // Рисуем синий квадрат
             float text_w, text_h;
             SDL_GetTextureSize(text_texture, &text_w, &text_h);
 
-            SDL_FRect rect = {10, 10, text_w, text_h};
+            SDL_FRect rect = {0, 0, text_w, text_h};
             SDL_SetRenderDrawColor(renderer, 127, 127, 127, 255);
             SDL_RenderFillRect(renderer, &rect);
 
