@@ -2,8 +2,6 @@
 #include <SDL3/SDL_main.h>
 #include <SDL3_image/SDL_image.h>
 #include <SDL3_ttf/SDL_ttf.h>
-
-#include <iostream>
 #include <cstring>
 #include <string>
 
@@ -91,7 +89,6 @@ int main(int argc, char *argv[]) {
             SDL_RenderTexture(renderer, texture, NULL, NULL); 
         }
 
-        // Рисуем текст поверх квадрата
         if (text_texture) {
             float text_w, text_h;
             SDL_GetTextureSize(text_texture, &text_w, &text_h);
